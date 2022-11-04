@@ -1,0 +1,3 @@
+class gridFactory:
+    def getNetwork():
+        
