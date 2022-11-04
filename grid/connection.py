@@ -57,31 +57,3 @@ class ConnectionTable :
 
         return listIntersection(AConnections, BConnections)
     
-def test() :
-    a = ConnectionTable(5)
-    #print(a)
-
-    for i in range(a.size) :
-        for j in range(a.size) :
-            a.set(i, j, True)
-        print(a)
-        
-    #a.set(0, 2, False)
-    #print(a)
-    #print("\n")
-        
-    A = [1, 2, 3, 4, 5, 6, 7]
-    B = [3, 4, 1, 10, 2, 11, 6]
-    print(listIntersection(A, B))
-    
-    print(a.numberOfMutualConnections(0, 1))
-    
-    #print(a.connected(3, 3))
-    #print(a.connected(6, 7))
-    #print(a.connected())
-    #a.set(0, 0, True)
-    #print(a.connected())
-    #a.set(3, 3, 7)
-    #print(a.connected(3, 3))
-    #print(a.size)
-        

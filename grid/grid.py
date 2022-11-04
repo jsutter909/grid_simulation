@@ -1,15 +1,16 @@
-from node import *
 
-class Network :
+
+class Grid :
     def __init__(self, data) :
 
-        def createNodeList():
-            nodeList = []
+        def createHouses():
+            houses = []
             for n in data:
                 nodeList.append(Node(n.id, n.location, n.connections))
             return nodeList
 
-        self.nodes = createNodeList()
+        self.houses = createNodeList()
+        self.substations
 
     def __str__(self) :
         return ""
@@ -22,10 +23,3 @@ class Network :
 
 
     
-
-
-
-
-
-
-

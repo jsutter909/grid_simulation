@@ -4,9 +4,15 @@ from random import randint, random
 
 from network import *
 
+from gridFactory import *
 
+import matplotlib
 
-powergrid = 
+matplotlib.use("Agg")
+import matplotlib.backends.backend_agg as agg
+import matplotlib.pyplot as plt
+import matplotlib.lines as lines
+import pylab
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -18,13 +24,14 @@ w = 1024
 h = 768
 size = (w, h)
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("Social Network")
+pygame.display.set_caption("Power Network")
 
-xCentre = w/2
-yCentre = h/2
 
 done = False
 clock = pygame.time.Clock()
+
+
+powergrid = gridFactory.getNetwork()
 
 while not done:
     for event in pygame.event.get():
@@ -33,32 +40,21 @@ while not done:
 
     screen.fill(BLACK)
 
-    def drawLines():
-        for i in range(testNetwork.nodes):
-            for j in range(testNetwork.nodes):
-                if testNetwork.particlesConnected(i, j):
-                    x0 = xCentre + testNetwork.particles[i].position.x
-                    y0 = yCentre + testNetwork.particles[i].position.y
-                    x1 = xCentre + testNetwork.particles[j].position.x
-                    y1 = yCentre + testNetwork.particles[j].position.y
-                    pygame.draw.line(screen, GREY, [x0, y0], [x1, y1], 1)
+    for n in powergrid.nodes:
+        x0,y0 = n.location
+        for j in n.connected: 
+            x1,y1 = powergrid.getNodeById(j).location
+            pygame.draw.line(screen, GREY, [x0, y0], [x1, y1], 2)
 
-    drawLines()
     
-    for n in range(testNetwork.nodes):
-        radius = 7*testNetwork.neighbourCount(n)
-        x = xCentre + testNetwork.particles[n].position.x - radius/2
-        y = yCentre + testNetwork.particles[n].position.y - radius/2
+    for n in powergrid.nodes:
+        radius = 50
+        x = n.location[0]- radius/2
+        y = n.location[1] - radius/2
         if radius > 1:
             pygame.draw.ellipse(screen, WHITE, [x, y, radius, radius], 1)
 
     pygame.display.flip()
-
-    testNetwork.updateForces()
-    testNetwork.updatePositions()
-    testNetwork.dampVelocities(0.3)
-        
-
 
     clock.tick(33) #Each tick represents 5 minutes
 
