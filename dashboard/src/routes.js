@@ -15,9 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard from "views/Dashboard.js";
+import Preferences from "views/Preferences";
 import UserProfile from "views/UserProfile.js";
-import TableList from "views/TableList.js";
+import Analysis from "views/Analysis";
 import Typography from "views/Typography.js";
 import Icons from "views/Icons.js";
 import Maps from "views/Maps.js";
@@ -34,10 +34,10 @@ const dashboardRoutes = [
   //   layout: "/admin"
   // },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "nc-icon nc-chart-pie-35",
-    component: Dashboard,
+    path: "/preferences",
+    name: "Preferences",
+    icon: "nc-icon nc-preferences-circle-rotate",
+    component: Preferences,
     layout: "/admin"
   },
   // {
@@ -48,10 +48,10 @@ const dashboardRoutes = [
   //   layout: "/admin"
   // },
   {
-    path: "/table",
-    name: "Table List",
-    icon: "nc-icon nc-notes",
-    component: TableList,
+    path: "/analysis",
+    name: "Grid Analysis",
+    icon: "nc-icon nc-vector",
+    component: Analysis,
     layout: "/admin"
   },
   // {
