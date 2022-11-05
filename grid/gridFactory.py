@@ -1,14 +1,12 @@
-from typing import List, Tuple , Optional
-import enum
 from house import *
 from substation import *
 from powerline import *
 from powerplant import *
-from world import *
+from grid import *
 
 
 
-class WorldFactory:
+class GridFactory:
   def getWorld():
     data = {
       "houses":[
@@ -25,4 +23,4 @@ class WorldFactory:
         PowerPlant(2,"Gas",(700,500),50,200,10),
       ]
     }
-    return World(data)
+    return Grid(data)

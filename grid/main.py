@@ -1,16 +1,6 @@
 import pygame
-from math import *
-from random import randint, random
+from gridFactory import *
 
-from worldFactory import *
-
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.backends.backend_agg as agg
-import matplotlib.pyplot as plt
-import matplotlib.lines as lines
-import pylab
 
 
 pygame.init()
@@ -26,7 +16,7 @@ done = False
 clock = pygame.time.Clock()
 
 
-world = WorldFactory.getWorld()
+world = GridFactory.getWorld()
 
 while not done:
     for event in pygame.event.get():
