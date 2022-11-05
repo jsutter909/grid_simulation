@@ -1,6 +1,8 @@
 import pygame
-from gridFactory import *
 
+from infomenu import InfoMenu
+from gridFactory import *
+from app import *
 
 
 pygame.init()
@@ -16,18 +18,19 @@ done = False
 clock = pygame.time.Clock()
 
 
-world = GridFactory.getWorld()
+grid = GridFactory.get_grid()
 
+infomenu = InfoMenu((w-500,100),(100,w-400))
+
+app = App(grid,infomenu)
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
 
     screen.fill(BLACK)
-
-    world.update()
-    world.draw(screen)
-
+    app.update()
+    app.draw(screen)
     pygame.display.flip()
 
     clock.tick(33) #Each tick represents 5 minutes

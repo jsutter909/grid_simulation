@@ -9,7 +9,6 @@ class Substation:
     location: Tuple[int, int]
     connectedHouses: List[int]
     connectedPowerPlants: List[int]
-    connectedSubstations: List[int]
 
     # def __post_init__(self):
     #     self.houseImg= pygame.image.load('resources/house.png')

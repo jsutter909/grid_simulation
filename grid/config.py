@@ -1,0 +1,4 @@
+
+
+ticksperday = 165
+
