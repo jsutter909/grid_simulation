@@ -2,9 +2,7 @@ import pygame
 from math import *
 from random import randint, random
 
-from network import *
-
-from gridFactory import *
+from worldFactory import *
 
 import matplotlib
 
@@ -20,8 +18,8 @@ GREY = (100, 100, 100)
 
 pygame.init()
 
-w = 1024
-h = 768
+w = 1920
+h = 1080
 size = (w, h)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Power Network")
@@ -31,7 +29,7 @@ done = False
 clock = pygame.time.Clock()
 
 
-powergrid = gridFactory.getNetwork()
+world = WorldFactory.getWorld()
 
 while not done:
     for event in pygame.event.get():
@@ -40,19 +38,8 @@ while not done:
 
     screen.fill(BLACK)
 
-    for n in powergrid.nodes:
-        x0,y0 = n.location
-        for j in n.connected: 
-            x1,y1 = powergrid.getNodeById(j).location
-            pygame.draw.line(screen, GREY, [x0, y0], [x1, y1], 2)
-
-    
-    for n in powergrid.nodes:
-        radius = 50
-        x = n.location[0]- radius/2
-        y = n.location[1] - radius/2
-        if radius > 1:
-            pygame.draw.ellipse(screen, WHITE, [x, y, radius, radius], 1)
+    world.update()
+    world.draw(screen)
 
     pygame.display.flip()
 
