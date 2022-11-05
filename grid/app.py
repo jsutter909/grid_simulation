@@ -10,8 +10,8 @@ class App:
         self.info_menu = info_menu
         self.info_menu_open = is_menu_open
 
-    def update(self):
-        self.grid.update()
+    def update(self,time):
+        self.grid.update(time)
 
     def draw(self,screen):
         self.grid.draw(screen)

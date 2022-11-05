@@ -1,8 +1,10 @@
 import pygame
 
+from environment import *
 from infomenu import InfoMenu
 from gridFactory import *
 from app import *
+from config import ticksperday
 
 
 pygame.init()
@@ -17,19 +19,27 @@ pygame.display.set_caption("Power Network")
 done = False
 clock = pygame.time.Clock()
 
+timesteps = ticksperday*7
+env = Environment(timesteps)
 
-grid = GridFactory.get_grid()
+grid = GridFactory.get_grid(env)
 
 infomenu = InfoMenu((w-500,100),(100,w-400))
 
+
 app = App(grid,infomenu)
+time = 0
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
 
+    time+=1
+
     screen.fill(BLACK)
-    app.update()
+    if (time < timesteps):
+        app.update(time)
+
     app.draw(screen)
     pygame.display.flip()
 

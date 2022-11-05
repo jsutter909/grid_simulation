@@ -48,4 +48,7 @@ class House:
         return 0
 
     def get_useage(self, time):
-        return self.consumption_rate + sum([adj.get_consumption_adjustment(time) for adj in self.consumption_adjustments])
+        return self.consumption_rate \
+               + self.get_generation(time) \
+               + self.get_battery_charging(time) \
+               + sum([adj.get_consumption_adjustment(time) for adj in self.consumption_adjustments])

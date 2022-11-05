@@ -10,9 +10,10 @@ import pygame
 from config import ticksperday
 
 class InfoMenu:
-    def __init__(self,location,size):
+    def __init__(self,location,size,env):
         self.location = location
         self.size = size
+        self.env = env
 
     def drawWorldInfo(self,env,screen):
         s = "Time: " + str(env['time'][-1])  # + " Day: " + str(self.day) + " Hour: " + str(self.hour) + " Sun Power: " + str(self.sun)
@@ -40,10 +41,9 @@ class InfoMenu:
         surf = pygame.image.fromstring(raw_data, size, "RGB")
         return surf
 
-    def draw(self,screen,grid):
-        env = grid.environment
-        self.drawWorldInfo(env,screen)
-        self.drawSunGraph(env,screen)
+    def draw(self,screen,grid,time):
+        self.drawWorldInfo(self.env,time,screen)
+        self.drawSunGraph(self.env,time,screen)
 
     # def draw_surface_loads_curves(self, n_hours_to_display_top_loadplot, n_hours_to_display_bottom_loadplot):
     #     # Loads curve surface: retrieve images surfaces, stack them into a common surface, plot horizontal lines
