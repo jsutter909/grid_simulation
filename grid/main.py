@@ -12,9 +12,6 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as lines
 import pylab
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREY = (100, 100, 100)
 
 pygame.init()
 
