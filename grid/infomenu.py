@@ -1,4 +1,7 @@
+from typing import Tuple
 import matplotlib
+
+from environment import Environment
 
 matplotlib.use("Agg")
 import matplotlib.backends.backend_agg as agg
@@ -10,7 +13,7 @@ import pygame
 from config import ticksperday
 
 class InfoMenu:
-    def __init__(self,location,size,env):
+    def __init__(self, location: Tuple[int, int], size: Tuple[int, int], env: Environment):
         self.location = location
         self.size = size
         self.env = env
@@ -42,8 +45,8 @@ class InfoMenu:
         return surf
 
     def draw(self,screen,grid,time):
-        self.drawWorldInfo(self.env,time,screen)
-        self.drawSunGraph(self.env,time,screen)
+        self.drawWorldInfo(self.env,screen)
+        self.drawSunGraph(self.env,screen)
 
     # def draw_surface_loads_curves(self, n_hours_to_display_top_loadplot, n_hours_to_display_bottom_loadplot):
     #     # Loads curve surface: retrieve images surfaces, stack them into a common surface, plot horizontal lines

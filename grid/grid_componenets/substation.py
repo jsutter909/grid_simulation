@@ -1,18 +1,15 @@
 from dataclasses import dataclass
-from typing import List, Tuple , Optional
+from typing import Tuple
 from colors import *
 import pygame
 
 @dataclass
 class Substation:
-    id: int
     location: Tuple[int, int]
-    connectedHouses: List[int]
-    connectedPowerPlants: List[int]
 
     # def __post_init__(self):
     #     self.houseImg= pygame.image.load('resources/house.png')
 
-    def draw(self,screen):
+    def draw(self, screen):
         pygame.draw.circle(screen, WHITE,self.location, 20, 0)
         

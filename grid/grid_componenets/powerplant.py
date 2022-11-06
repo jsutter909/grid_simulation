@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 import pygame
-from typing import List, Tuple , Optional
+from typing import Tuple
 
 @dataclass
 class PowerPlant:
-    id: int
+
     fuel: str
     location: Tuple[int, int]
     cost: int

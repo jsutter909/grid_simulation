@@ -5,7 +5,6 @@ from typing import List, Tuple
 
 from config import ticksperday
 
-
 class ConsumptionAdjustment(abc.ABC):
 
     def get_consumption_adjustment(self, time) -> float:
