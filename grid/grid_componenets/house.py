@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-import functools
 from typing import Tuple, Optional
 import enum
 
 import pygame
 
 import config
+import green_grid_ai.ai
 from adjustments import ConsumptionAdjustment
 from grid_componenets.battery import Battery
 
@@ -29,10 +29,12 @@ class House:
         DEFAULT_IMAGE_SIZE = (50, 50)
         image = pygame.image.load('resource/house.png').convert_alpha()
         self.house_img = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
+        self.green_grid_AI = green_grid_ai.ai.BatteryTargetAI(self)
 
     # Green grid ai here?
-    def update(self, time):
-        self.battery.charge += self.get_battery_charging(time) * (24 / config.ticksperday)
+    def update(self, grid, time):
+        self.battery.charge += self.get_battery_charging(grid, time) * (24 / config.ticksperday)
+        print(f"battery_charge:{self.battery.charge}")
 
     def consume(self):
         pass
@@ -45,16 +47,18 @@ class House:
         r.center = self.location
         screen.blit(self.house_img, r)
 
-    def get_usage(self, time):
+    def get_non_battery_useage(self, time):
         return self.consumption_rate \
                + self.get_generation(time) \
-               + self.get_battery_charging(time) \
                + sum([adj.get_consumption_adjustment(time) for adj in self.consumption_adjustments])
 
-    def get_battery_charging(self, time):
+    def get_usage(self, grid, time):
+        return self.get_non_battery_useage(time) + self.get_battery_charging(grid, time)
+
+    def get_battery_charging(self, grid, time):
         charge_tolerance = 0.2 # unit-hours
 
-        target_charge = self.battery.capacity * self.get_battery_charge_target(time)
+        target_charge = self.battery.capacity * self.get_battery_charge_target(grid, time)
 
         if self.battery.charge < target_charge - charge_tolerance:
             return self.battery.charging_rate
@@ -67,5 +71,5 @@ class House:
     def get_generation(self, time):
         return 0
 
-    def get_battery_charge_target(self, time):
-        return 0.5
+    def get_battery_charge_target(self, grid, time: int) -> float:
+        return self.green_grid_AI.get_battery_target(grid, time)

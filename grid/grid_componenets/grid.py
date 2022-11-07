@@ -1,4 +1,4 @@
-from typing import Dict, Union, List
+from typing import Dict, List
 
 from grid_componenets.grid_configuration import GridConfiguration
 from grid_componenets.house import *
@@ -27,13 +27,16 @@ class Grid:
     # This should mean one minute of gametime equates to ~1 week of time
     def update(self, time: int):
         self.distribute_power(time)
-        [house.update(time) for house in self.houses]
+        [house.update(self, time) for house in self.houses]
 
     def draw(self, screen):
         [x.draw(screen) for x in self.houses]
         [x.draw(screen) for x in self.power_plants]
         [x.draw(screen) for x in self.power_lines.values()]
         self.substation.draw(screen)
+
+    def get_homes_power(self, time: int):
+        return sum(house.get_non_battery_useage(time) for house in self.houses)
 
     def distribute_power(self, time: int):
         """
@@ -46,7 +49,7 @@ class Grid:
 
         for i in range(len(self.houses)):
             house = self.houses[i]
-            usage = house.get_usage(time)
+            usage = house.get_usage(self, time)
             house_power_flow.append(usage)
             self.power_lines[i].flow = usage
 
