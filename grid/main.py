@@ -22,7 +22,7 @@ env = Environment(timesteps)
 
 grid = GridFactory.get_grid(env)
 
-infomenu = InfoMenu((w - 500, 100), (100, w - 400), env)
+infomenu = InfoMenu((w - 500, 0), (100, w - 400), env)
 
 app = App(grid, infomenu)
 time = 0

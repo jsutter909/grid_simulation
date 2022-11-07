@@ -7,17 +7,17 @@ from grid_componenets.powerline import *
 from grid_componenets.powerplant import *
 
 class Grid:
-    def __init__(self, environment, data: GridConfiguration):
+    def __init__(self, env, data: GridConfiguration):
         self.houses: List[House] = data.houses
         self.power_plants: List[PowerPlant] = data.power_plants
         self.substation: Substation = data.substation
 
         self.power_lines: Dict[int, PowerLine] = dict()
 
-        self.environment = environment
+        self.env = env
 
-        self.price_graph_store = GraphStore(["price"], 0, config.tick_to_hour(1))
-        self.global_price_predictor = green_grid_ai.ai.GlobalPricePredictor()
+        self.price_graph_store = GraphStore(["price"], 0, config.tick_to_hour(1), config.ticks_per_day)
+        self.global_price_predictor = green_grid_ai.ai.GlobalPricePredictor(self.env)
 
         start = self.substation.location
 
@@ -31,7 +31,7 @@ class Grid:
     def update(self, time: int):
         self.distribute_power(time)
         self.price_graph_store.publish((self.global_price_predictor.predict(self, time),))
-        [house.update(self, time) for house in self.houses]
+        [house.update(self, time, self.env) for house in self.houses]
 
     def draw(self, screen):
         [x.draw(screen) for x in self.houses]
@@ -40,7 +40,7 @@ class Grid:
         self.substation.draw(screen)
 
     def get_homes_power(self, time: int):
-        return sum(house.get_non_battery_useage(time) for house in self.houses)
+        return sum(house.get_non_battery_useage(time, self.env) for house in self.houses)
 
     def distribute_power(self, time: int):
         """
@@ -53,7 +53,7 @@ class Grid:
 
         for i in range(len(self.houses)):
             house = self.houses[i]
-            usage = house.get_usage(self, time)
+            usage = house.get_usage(self, time, self.env)
             house_power_flow.append(usage)
             self.power_lines[i].flow = usage
 

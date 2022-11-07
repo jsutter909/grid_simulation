@@ -8,9 +8,10 @@ class BatteryTargetAI:
     This object, given information on the future energy price and household load, will set a target battery fill level
     as a % of full.
     """
-    def __init__(self, house):
+    def __init__(self, house, env):
         self.house = house
-        self.global_price_predictor = GlobalPricePredictor()
+        self.global_price_predictor = GlobalPricePredictor(env)
+        self.env = env
 
     def get_battery_target(self, grid, time: int) -> float:
 
@@ -18,20 +19,24 @@ class BatteryTargetAI:
 
         price = self.global_price_predictor.predict(grid, time)
 
-        future_price_agv = sum(
-            self.global_price_predictor.predict(grid, time) for time in steps
-        ) / len(steps)
+        # future_price_avg = sum(
+        #     self.global_price_predictor.predict(grid, time) for time in steps
+        # ) / len(steps)
+        future_price_avg = config.median_power_price
 
         future_demand_avg = sum(
-            self.house.get_non_battery_useage(time) for time in steps
+            self.house.get_non_battery_useage(time, self.env) for time in steps
         ) / len(steps)
+
+        if future_demand_avg < 0:
+            return 1
 
         def sigmoid(x):
             return 1.0 / (1 + math.e**(-x))
 
-        target = sigmoid(math.log(future_price_agv / price * future_demand_avg))
+        target = sigmoid((future_price_avg / price - 1) * future_demand_avg)
 
-        print(f"price:{price}, future_price_avg:{future_price_agv}, future_demand_avg:{future_demand_avg}, raw_target:{future_price_agv / price * future_demand_avg}, target:{target}")
+        print(f"price:{price}, future_price_avg:{future_price_avg}, future_demand_avg:{future_demand_avg}, raw_target:{future_price_avg / price * future_demand_avg}, target:{target}")
 
         return target
 
@@ -44,8 +49,9 @@ class GlobalPricePredictor:
     This object predicts the future price of energy
     """
 
-    def __init__(self):
-        self.global_load_predictor = GlobalLoadPredictor()
+    def __init__(self, env):
+        self.env = env
+        self.global_load_predictor = GlobalLoadPredictor(self.env)
 
     @functools.lru_cache
     def weekly_average_demand(self, grid) -> float:
@@ -65,8 +71,11 @@ class GlobalLoadPredictor:
     """
     This object predicts the future load of the grid.
     """
+    def __init__(self, env):
+        self.env = env
+
     def predict(self, grid, time: int) -> float:
-        return sum(house.get_non_battery_useage(time) for house in grid.houses)
+        return sum(house.get_non_battery_useage(time, self.env) for house in grid.houses)
 
 
 class LoadPredictor:

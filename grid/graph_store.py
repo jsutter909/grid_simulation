@@ -17,7 +17,7 @@ class GraphStore(Generic[T]):
     Will save metrics to be graphed at any point in time.
     """
 
-    def __init__(self, labels: List[str], y_start: int = 0, step: int = 1):
+    def __init__(self, labels: List[str], y_start: int = 0, step: int = 1, max_steps = 1000):
         self.x: List[List[float]] = []
         self.y: List[float] = []
 
@@ -25,6 +25,7 @@ class GraphStore(Generic[T]):
 
         self.counter = y_start
         self.step = step
+        self.max_steps = max_steps
 
     def publish(self, data: T):
         self.x.append(data)
@@ -50,7 +51,7 @@ class GraphStore(Generic[T]):
 
         for i in range(len(labels_to_show)):
             data_index = self.labels.index(labels_to_show[i])
-            plt.plot(self.y, list(map(lambda e: e[data_index], self.x)), colors[i], label=labels_to_show[i])
+            plt.plot(self.y[-self.max_steps:], list(map(lambda e: e[data_index], self.x))[-self.max_steps:], colors[i], label=labels_to_show[i])
 
         plt.set_xlabel(xlabel)
         plt.set_ylabel(ylabel)
