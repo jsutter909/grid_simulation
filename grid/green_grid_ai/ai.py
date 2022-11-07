@@ -14,7 +14,7 @@ class BatteryTargetAI:
 
     def get_battery_target(self, grid, time: int) -> float:
 
-        steps = list(range(config.ticksperday//2))
+        steps = list(range(config.ticks_per_day // 2))
 
         price = self.global_price_predictor.predict(grid, time)
 
@@ -35,6 +35,9 @@ class BatteryTargetAI:
 
         return target
 
+    def get_price(self, grid, time):
+        return self.global_price_predictor.predict(grid, time)
+
 
 class GlobalPricePredictor:
     """
@@ -46,7 +49,7 @@ class GlobalPricePredictor:
 
     @functools.lru_cache
     def weekly_average_demand(self, grid) -> float:
-        total_ticks = config.ticksperday * 7
+        total_ticks = config.ticks_per_day * 7
         return sum(grid.get_homes_power(time) for time in range(total_ticks)) / total_ticks
 
     def predict(self, grid, time: int) -> float:

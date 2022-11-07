@@ -3,7 +3,7 @@ import abc
 from dataclasses import dataclass
 from typing import List, Tuple
 
-from config import ticksperday
+from config import ticks_per_day
 
 class ConsumptionAdjustment(abc.ABC):
 
@@ -12,7 +12,7 @@ class ConsumptionAdjustment(abc.ABC):
 
     def get_day_graph(self) -> Tuple[List[int], List[float]]:
 
-        x_axis = list(range(ticksperday))
+        x_axis = list(range(ticks_per_day))
         y_axis = [self.get_consumption_adjustment(time) for time in x_axis]
 
         return (x_axis, y_axis)
@@ -25,7 +25,7 @@ class ChargingCarAdjustment(ConsumptionAdjustment):
     charging_time: int # numticks
 
     def get_consumption_adjustment(self, time: int) -> float:
-        normalized_time = time // ticksperday
+        normalized_time = time // ticks_per_day
 
         start_time = round(165*(17.5/24)) #start charging at 5:30 pm
 

@@ -50,7 +50,7 @@ class GraphStore(Generic[T]):
 
         for i in range(len(labels_to_show)):
             data_index = self.labels.index(labels_to_show[i])
-            plt.plot(self.x[data_index], self.y, colors[i], labels_to_show[i])
+            plt.plot(self.y, list(map(lambda e: e[data_index], self.x)), colors[i], label=labels_to_show[i])
 
         plt.set_xlabel(xlabel)
         plt.set_ylabel(ylabel)

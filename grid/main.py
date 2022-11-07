@@ -4,7 +4,7 @@ from colors import BLACK
 from environment import *
 from grid_componenets.gridFactory import *
 from app import *
-from config import ticksperday
+from config import ticks_per_day
 
 pygame.init()
 
@@ -17,7 +17,7 @@ pygame.display.set_caption("Power Network")
 done = False
 clock = pygame.time.Clock()
 
-timesteps = ticksperday * 7
+timesteps = ticks_per_day * 7
 env = Environment(timesteps)
 
 grid = GridFactory.get_grid(env)

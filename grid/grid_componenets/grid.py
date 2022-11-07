@@ -16,6 +16,9 @@ class Grid:
 
         self.environment = environment
 
+        self.price_graph_store = GraphStore(["price"], 0, config.tick_to_hour(1))
+        self.global_price_predictor = green_grid_ai.ai.GlobalPricePredictor()
+
         start = self.substation.location
 
         for i in range(len(self.houses)):
@@ -27,6 +30,7 @@ class Grid:
     # This should mean one minute of gametime equates to ~1 week of time
     def update(self, time: int):
         self.distribute_power(time)
+        self.price_graph_store.publish((self.global_price_predictor.predict(self, time),))
         [house.update(self, time) for house in self.houses]
 
     def draw(self, screen):
@@ -58,3 +62,7 @@ class Grid:
 
         for i in range(len(self.power_plants)):
             self.power_lines[i + len(self.houses)].flow = min(power_requested/len(self.power_lines), 0)
+
+    def get_grid_graphs(self):
+        return [house.get_graph() for house in self.houses] \
+               + [self.price_graph_store.generate_graph(["price"], config.graph_size, "Energy Price", "Hours", "Dollars")]

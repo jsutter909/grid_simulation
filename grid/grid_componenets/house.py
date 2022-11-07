@@ -7,6 +7,7 @@ import pygame
 import config
 import green_grid_ai.ai
 from adjustments import ConsumptionAdjustment
+from graph_store import GraphStore
 from grid_componenets.battery import Battery
 
 
@@ -14,6 +15,7 @@ class Generator(enum.Enum):
     solar = 'solar'
     wind = 'wind'
 
+labels = ["usage", "target_charge", "battery_charge"]
 
 @dataclass
 class House:
@@ -30,11 +32,15 @@ class House:
         image = pygame.image.load('resource/house.png').convert_alpha()
         self.house_img = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
         self.green_grid_AI = green_grid_ai.ai.BatteryTargetAI(self)
+        self.graph_store = GraphStore(labels, 0, config.tick_to_hour(1))
 
     # Green grid ai here?
     def update(self, grid, time):
-        self.battery.charge += self.get_battery_charging(grid, time) * (24 / config.ticksperday)
-        print(f"battery_charge:{self.battery.charge}")
+        self.graph_store.publish([
+            self.get_usage(grid, time),
+            self.get_battery_charge_target(grid, time),
+            self.battery.charge])
+        self.battery.charge += self.get_battery_charging(grid, time) * config.tick_to_hour(1)
 
     def consume(self):
         pass
@@ -73,3 +79,6 @@ class House:
 
     def get_battery_charge_target(self, grid, time: int) -> float:
         return self.green_grid_AI.get_battery_target(grid, time)
+
+    def get_graph(self):
+        return self.graph_store.generate_graph(labels, config.graph_size, self.name, "Hours", "KW/KWh")
