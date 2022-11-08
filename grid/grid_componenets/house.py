@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 import enum
 
 import pygame
@@ -12,7 +12,7 @@ from grid_componenets.battery import Battery
 
 # labels = ["consumption", "target_charge", "battery_charge"]
 from grid_componenets.generator import Generator
-
+import math
 labels = ["consumption", "target charge", "battery charge", "generation", "net grid flow"]
 
 @dataclass
@@ -22,14 +22,12 @@ class House:
     name: str
     consumption_rate: float
     battery: Battery
-    generator: Optional[Generator]
+    generators: Optional[List[Generator]]
     consumption_adjustments: Tuple[ConsumptionAdjustment]
 
     def __post_init__(self):
-        DEFAULT_IMAGE_SIZE = (50, 50)
-        image = pygame.image.load('resource/house.png').convert_alpha()
-        self.house_img = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
         self.graph_store = GraphStore(labels, 0, config.tick_to_hour(1), config.ticks_per_day)
+        self.points = self.get_regular_polygon_points(5,20,self.location)
 
     # Green grid ai here?
     def update(self, grid, time, env):
@@ -47,10 +45,8 @@ class House:
     def produce(self):
         pass
 
-    def draw(self, screen):
-        r = self.house_img.get_rect()
-        r.center = self.location
-        screen.blit(self.house_img, r)
+    def draw(self, screen):      
+        pygame.draw.polygon(screen,config.theme['house'],self.points,0)
 
     def get_non_battery_useage(self, time, env):
         return self.consumption_rate \
@@ -73,10 +69,19 @@ class House:
             return -1 * self.battery.discharging_rate
 
     def get_generation(self, time, env):
-        return self.generator.get_generation(time, env) if self.generator else 0
+        generation = 0
+        if not self.generators: return 0
+        for g in self.generators:
+            generation += g.get_generation(time, env)
+        return generation
 
     def get_battery_charge_target(self, grid, time: int, env) -> float:
         return green_grid_ai.ai.BatteryTargetAI(self, env).get_battery_target(grid, time)
 
     def get_graph(self):
         return self.graph_store.generate_graph(labels, config.graph_size, self.name, "Hours", "KW/KWh")
+
+    def get_regular_polygon_points(self,vertex_count, radius, position):
+        n, r = vertex_count, radius
+        x, y = position
+        return [(x + r * math.cos(2 * math.pi * i / n), y + r * math.sin(2 * math.pi * i / n)) for i in range(n)]

@@ -4,7 +4,7 @@ from colors import *
 import pygame
 from pygame.math import Vector2
 
-from config import orb_center_distance, orb_radius
+from config import orb_center_distance, orb_radius, theme
 
 @dataclass
 class PowerLine:
@@ -36,7 +36,7 @@ class PowerLine:
                 orbstart = orbstart.move_towards(finish, orb_center_distance)
 
             self.offset = (self.offset + orb_speed) % orb_center_distance
-        pygame.draw.line(screen, WHITE, start, finish, 2)
+        pygame.draw.line(screen, theme['powerline'], start, finish, 2)
 
 
     def update(self,flow):

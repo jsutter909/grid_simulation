@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame
 from typing import Tuple
-
+from config import theme
 @dataclass
 class PowerPlant:
 
@@ -10,4 +10,4 @@ class PowerPlant:
     cost: int
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (255, 255, 255), self.location, 20, 0)
+        pygame.draw.circle(screen, theme['powerplant'], self.location, 20, 0)

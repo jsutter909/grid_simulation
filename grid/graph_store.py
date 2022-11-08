@@ -4,6 +4,7 @@ import pygame
 import pylab
 
 import matplotlib
+from config import graph_face_color, graph_bg_color
 
 matplotlib.use("Agg")
 
@@ -33,7 +34,7 @@ class GraphStore(Generic[T]):
         self.counter += self.step
         self.y.append(self.counter)
 
-    def generate_graph(self, labels_to_show: List[str], size, title, xlabel, ylabel):
+    def generate_graph(self, labels_to_show: List[str], size, title, xlabel, ylabel,facecolor=graph_face_color,bgcolor=graph_bg_color):
         """
         Returns a surface with the graph which contains plots of the specified labels
         :param labels_to_show: the labels from this graph store that should be plotted
@@ -46,7 +47,7 @@ class GraphStore(Generic[T]):
 
         colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
 
-        fig = pylab.figure(figsize=size, dpi=100)
+        fig = pylab.figure(figsize=size,facecolor=bgcolor,dpi=100)
         plt = fig.gca()
 
         for i in range(len(labels_to_show)):
@@ -56,6 +57,7 @@ class GraphStore(Generic[T]):
         plt.set_xlabel(xlabel)
         plt.set_ylabel(ylabel)
         plt.set_title(title)
+        plt.set_facecolor(facecolor)
         plt.legend()
 
         canvas = agg.FigureCanvasAgg(fig)

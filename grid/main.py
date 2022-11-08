@@ -1,10 +1,10 @@
 import pygame
 
-from colors import BLACK
+from colors import *
 from environment import *
 from grid_componenets.gridFactory import *
 from app import *
-from config import ticks_per_day
+from config import *
 
 pygame.init()
 
@@ -33,7 +33,7 @@ while not done:
 
     time += 1
 
-    screen.fill(BLACK)
+    screen.fill(theme['background'])
     if time < timesteps:
         app.update(time)
 

@@ -14,7 +14,7 @@ class SolarGenerator(Generator):
     capacity: float
 
     def get_generation(self, time, env):
-        return self.capacity * env["sun"][time % config.ticks_per_day]
+        return self.capacity * env["sun"][time]
 
 
 @dataclass
@@ -22,4 +22,4 @@ class WindGenerator(Generator):
     capacity: float
 
     def get_generation(self, time, env):
-        return self.capacity * env["weather"][time % config.ticks_per_day]
+        return self.capacity * env["wind"][time]

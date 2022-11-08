@@ -29,6 +29,25 @@ class InfoMenu:
         surf = self.getGraph([5,2.5],"Sun Power", env["time"][-ticks_per_day:], env["sun"][-ticks_per_day:], "Time", "Sun Power")
         screen.blit(surf, self.location + (500, 0))
 
+
+    def draw_world_graphs(self,grid,time,screen):
+        pass
+
+
+    def draw_grid_graphs(self, grid, time, screen):
+        counter = 0
+
+        for graph in grid.get_grid_graphs():
+            screen.blit(graph, (self.location[0] + 0, self.location[1] + counter))
+            counter += config.graph_spacing
+
+
+    def draw(self,screen,grid,time):
+        self.drawWorldInfo(self.env,screen)
+        self.draw_world_graphs(grid,time,screen)
+        # self.drawSunGraph(self.env,screen)
+        self.draw_grid_graphs(grid, time,screen)
+
     def getGraph(self,size,title,x,y,xlabel,ylabel):
         fig = pylab.figure(figsize=size, dpi=100)
         plt = fig.gca()
@@ -45,19 +64,6 @@ class InfoMenu:
         surf = pygame.image.fromstring(raw_data, size, "RGB")
         return surf
 
-    def draw_grid_graphs(self, grid, screen):
-
-        counter = 0
-
-        for graph in grid.get_grid_graphs():
-            screen.blit(graph, (self.location[0] + 0, self.location[1] + counter))
-            counter += config.graph_spacing
-
-
-    def draw(self,screen,grid,time):
-        self.drawWorldInfo(self.env,screen)
-        # self.drawSunGraph(self.env,screen)
-        self.draw_grid_graphs(grid, screen)
 
     # def draw_surface_loads_curves(self, n_hours_to_display_top_loadplot, n_hours_to_display_bottom_loadplot):
     #     # Loads curve surface: retrieve images surfaces, stack them into a common surface, plot horizontal lines
