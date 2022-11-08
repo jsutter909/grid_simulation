@@ -20,8 +20,8 @@ class PowerLine:
         start = Vector2(self.start)
         finish = Vector2(self.finish)
         
-        # start = start.move_towards(finish,20)
-        # finish = finish.move_towards(start,20)
+        start = start.move_towards(finish,20)
+        finish = finish.move_towards(start,20)
 
         if self.flow != 0:
 
