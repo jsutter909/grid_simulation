@@ -11,7 +11,7 @@ import matplotlib.lines as lines
 import pylab
 import colors
 import pygame
-from config import ticks_per_day
+from config import *
 
 class InfoMenu:
     def __init__(self, location: Tuple[int, int], size: Tuple[int, int], env: Environment):
@@ -19,11 +19,6 @@ class InfoMenu:
         self.size = size
         self.env = env
 
-    def drawWorldInfo(self,env,screen):
-        s = "Time: " + str(env['time'][-1])  # + " Day: " + str(self.day) + " Hour: " + str(self.hour) + " Sun Power: " + str(self.sun)
-        font = pygame.font.SysFont(None, 48)
-        img = font.render(s, True, colors.WHITE)
-        screen.blit(img, (20, 20))
 
     def drawSunGraph(self,env,screen):
         surf = self.getGraph([5,2.5],"Sun Power", env["time"][-ticks_per_day:], env["sun"][-ticks_per_day:], "Time", "Sun Power")
@@ -41,10 +36,43 @@ class InfoMenu:
             screen.blit(graph, (self.location[0] + 0, self.location[1] + counter))
             counter += config.graph_spacing
 
+    def drawLegendBox(self,screen):
+        r = pygame.Rect(layout['legend'])
+        pygame.draw.rect(screen,GRAY,r)
+
+    def drawTimeBox(self,screen,time):
+        r = pygame.Rect(layout['time'])
+        pygame.draw.rect(screen,GRAY,r)
+        font = pygame.font.SysFont(None, 48)
+        s = "Time: " + str(time)
+        img = font.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2,r.centery-img.get_height()/2-30))
+        s = "Day: " + str(self.env['day'][time])
+        img = font.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2,r.centery-img.get_height()/2))
+        s = "Hour: " + str(int(self.env['hour'][time]))
+        img = font.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2,r.centery-img.get_height()/2+30))
+    
+    def drawWorldGraphBox(self,screen,time):
+        r = pygame.Rect(layout['worldgraph'])
+        pygame.draw.rect(screen,GRAY,r)
+
+    def drawLegendBox(self,screen):
+        r = pygame.Rect(layout['legend'])
+        pygame.draw.rect(screen,GRAY,r)
+    
+    def drawGridGraphBox(self,screen,time):
+        r = pygame.Rect(layout['gridgraph'])
+        pygame.draw.rect(screen,GRAY,r)
 
     def draw(self,screen,grid,time):
-        self.drawWorldInfo(self.env,screen)
-        self.draw_world_graphs(grid,time,screen)
+        self.drawTimeBox(screen,time)
+        self.drawWorldGraphBox(screen,time)
+        self.drawLegendBox(screen)
+        self.drawGridGraphBox(screen,time)
+        #self.drawWorldInfo(self.env,screen)
+        #self.draw_world_graphs(grid,time,screen)
         # self.drawSunGraph(self.env,screen)
         self.draw_grid_graphs(grid, time,screen)
 

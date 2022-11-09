@@ -36,7 +36,7 @@ class BatteryTargetAI:
 
         target = sigmoid((future_price_avg / price - 1) * future_demand_avg)
 
-        print(f"price:{price}, future_price_avg:{future_price_avg}, future_demand_avg:{future_demand_avg}, raw_target:{future_price_avg / price * future_demand_avg}, target:{target}")
+        #print(f"price:{price}, future_price_avg:{future_price_avg}, future_demand_avg:{future_demand_avg}, raw_target:{future_price_avg / price * future_demand_avg}, target:{target}")
 
         return target
 

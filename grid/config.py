@@ -28,3 +28,9 @@ theme = {
     'powerline':WHITE,
     'substation':BLACK
 }
+
+layout = {
+    'time':[(30,30),(400,200)],
+    'worldgraph':[(30,250),(400,800)],
+    'legend':[(1120,750),(250,300)],
+    'gridgraph':[(1400,30),(500,1020)]}
