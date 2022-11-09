@@ -38,16 +38,17 @@ while not done:
             if event.key == pygame.K_SPACE:
                 state=1-state
     
-    if time>=timesteps-1:
-        state==PAUSE
+    if time>=timesteps:
+        state=PAUSE
     if state==RUNNING:
-        time += 1
+        
 
         screen.fill(theme['background'])
         if time < timesteps:
             app.update(time)
 
         app.draw(screen, time)
+        time += 1
         pygame.display.flip()
 
     clock.tick(33)  # Each tick represents 5 minutes

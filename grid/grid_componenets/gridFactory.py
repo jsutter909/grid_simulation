@@ -13,9 +13,9 @@ class GridFactory:
     def get_grid(cls, env):
         data = GridConfiguration(
             [
-                House((600, 150), "Bobs house", 1, Battery(20, 0, 2, 2), [SolarGenerator(3.0),WindGenerator(10.0)], ()),
+                House((600, 150), "Bobs house", 6, Battery(20, 0, 2, 2), [SolarGenerator(3.0),WindGenerator(10.0)], ()),
                 House((800, 150), "Johns house", 8, Battery(20, 0, 2, 2), [SolarGenerator(7.0)], ()),
-                House((1000, 150), "Kims house", 3, Battery(10, 0, 2, 2), None, ()),
+                House((1000, 150), "Kims house", 12, Battery(10, 0, 2, 2), None, ()),
             ],
             [
                 PowerPlant("Coal", (700, 700), 10),

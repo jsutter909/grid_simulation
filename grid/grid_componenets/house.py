@@ -57,16 +57,14 @@ class House:
         return self.get_non_battery_useage(time, env) + self.get_battery_charging(grid, time, env)
 
     def get_battery_charging(self, grid, time, env):
-        charge_tolerance = 0.2 # unit-hours
-
         target_charge = self.battery.capacity * self.get_battery_charge_target(grid, time, env)
 
-        if self.battery.charge < target_charge - charge_tolerance:
-            return self.battery.charging_rate
-        elif target_charge - charge_tolerance < self.battery.charge < target_charge + charge_tolerance:
-            return 0
-        else:
-            return -1 * self.battery.discharging_rate
+        # if self.battery.charge < target_charge - self.battery.charging_rate * config.tick_to_hour(1):
+        #     return self.battery.charging_rate
+        # elif self.battery.charge > target_charge + self.battery.discharging_rate * config.tick_to_hour(1):
+        #     return -1 * self.battery.discharging_rate
+        # else:
+        return target_charge - self.battery.charge
 
     def get_generation(self, time, env):
         generation = 0
