@@ -40,13 +40,13 @@ const dashboardRoutes = [
     component: Preferences,
     layout: "/admin"
   },
-  // {
-  //   path: "/user",
-  //   name: "User Profile",
-  //   icon: "nc-icon nc-circle-09",
-  //   component: UserProfile,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/user",
+    name: "User Profile",
+    icon: "nc-icon nc-circle-09",
+    component: UserProfile,
+    layout: "/admin"
+  },
   {
     path: "/analysis",
     name: "Grid Analysis",
@@ -54,13 +54,13 @@ const dashboardRoutes = [
     component: Analysis,
     layout: "/admin"
   },
-  // {
-  //   path: "/typography",
-  //   name: "Typography",
-  //   icon: "nc-icon nc-paper-2",
-  //   component: Typography,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/typography",
+    name: "Typography",
+    icon: "nc-icon nc-paper-2",
+    component: Typography,
+    layout: "/admin"
+  },
   {
     path: "/icons",
     name: "Icons",
@@ -75,13 +75,13 @@ const dashboardRoutes = [
   //   component: Maps,
   //   layout: "/admin"
   // },
-  // {
-  //   path: "/notifications",
-  //   name: "Notifications",
-  //   icon: "nc-icon nc-bell-55",
-  //   component: Notifications,
-  //   layout: "/admin"
-  // }
+  {
+    path: "/notifications",
+    name: "Notifications",
+    icon: "nc-icon nc-bell-55",
+    component: Notifications,
+    layout: "/admin"
+  }
 ];
 
 export default dashboardRoutes;
