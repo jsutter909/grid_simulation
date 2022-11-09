@@ -65,4 +65,5 @@ class Grid:
 
     def get_grid_graphs(self):
         return [house.get_graph() for house in self.houses] \
-               + [self.price_graph_store.generate_graph(["price"], config.graph_size, "Energy Price", "Hours", "Dollars")]
+               + [self.price_graph_store.generate_graph(["price"], config.graph_size, "Energy Price", "Hours", "Dollars")]  
+

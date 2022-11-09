@@ -26,19 +26,29 @@ infomenu = InfoMenu((w - 500, 0), (100, w - 400), env)
 
 app = App(grid, infomenu)
 time = 0
+
+RUNNING, PAUSE = 0, 1
+state = RUNNING
+
 while not done:
-    for event in pygame.event.get():
+    for event in pygame.event.get():  
         if event.type == pygame.QUIT:
             done = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                state=1-state
+    
+    if time>=timesteps-1:
+        state==PAUSE
+    if state==RUNNING:
+        time += 1
 
-    time += 1
+        screen.fill(theme['background'])
+        if time < timesteps:
+            app.update(time)
 
-    screen.fill(theme['background'])
-    if time < timesteps:
-        app.update(time)
-
-    app.draw(screen, time)
-    pygame.display.flip()
+        app.draw(screen, time)
+        pygame.display.flip()
 
     clock.tick(33)  # Each tick represents 5 minutes
 

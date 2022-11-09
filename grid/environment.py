@@ -26,7 +26,7 @@ class Environment:
             if(day>2 and day<4):
                 weather = math.cos(self.map_range(day,2,4,-math.pi/2,math.pi/2))
 
-            wind=self.map_range(self.windFromDay(day),0,10,0,0.75) + self.map_range(weather,0,10,0,0.25)
+            wind=self.map_range(self.windFromDay(day),0,10,0,0.75) + self.map_range(weather,0,1,0,0.25)
 
 
             # Sun is 0 at midnight and 1 at noon

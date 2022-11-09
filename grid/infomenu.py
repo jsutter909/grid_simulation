@@ -18,7 +18,8 @@ class InfoMenu:
         self.location = location
         self.size = size
         self.env = env
-
+        self.count=10
+        
 
     def drawSunGraph(self,env,screen):
         surf = self.getGraph([5,2.5],"Sun Power", env["time"][-ticks_per_day:], env["sun"][-ticks_per_day:], "Time", "Sun Power")
@@ -30,9 +31,12 @@ class InfoMenu:
 
 
     def draw_grid_graphs(self, grid, time, screen):
+        if(self.count>=10):
+            self.grid_graphs = grid.get_grid_graphs()
+            self.count=0
+        self.count+=1
         counter = 0
-
-        for graph in grid.get_grid_graphs():
+        for graph in self.grid_graphs:
             screen.blit(graph, (self.location[0] + 0, self.location[1] + counter))
             counter += config.graph_spacing
 
