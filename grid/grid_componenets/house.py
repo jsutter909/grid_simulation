@@ -13,7 +13,7 @@ from grid_componenets.battery import Battery
 # labels = ["consumption", "target_charge", "battery_charge"]
 from grid_componenets.generator import Generator
 import math
-labels = ["consumption", "target charge", "battery charge", "generation", "net grid flow"]
+labels = ["consumption", "battery charge", "generation", "net grid flow"]
 
 @dataclass
 class House:
@@ -27,13 +27,12 @@ class House:
 
     def __post_init__(self):
         self.graph_store = GraphStore(labels, 0, config.tick_to_hour(1), config.ticks_per_day)
-        self.points = self.get_regular_polygon_points(5,20,self.location)
+        self.points = config.get_regular_polygon_points(3,40,self.location)
 
     # Green grid ai here?
     def update(self, grid, time, env):
         self.graph_store.publish([
             self.get_non_battery_useage(time, env) + self.get_generation(time, env),
-            self.get_battery_charge_target(grid, time, env) * self.battery.capacity,
             self.battery.charge,
             self.get_generation(time, env),
             self.get_usage(grid, time, env)])
@@ -47,6 +46,9 @@ class House:
 
     def draw(self, screen):      
         pygame.draw.polygon(screen,config.theme['house'],self.points,0)
+        font = pygame.font.SysFont(None, 30)
+        img = font.render(self.name, True, config.theme['text'])
+        screen.blit(img, (self.location[0]-img.get_width()/2,self.location[1]-40))
 
     def get_non_battery_useage(self, time, env):
         return self.consumption_rate \
@@ -79,7 +81,3 @@ class House:
     def get_graph(self):
         return self.graph_store.generate_graph(labels, config.graph_size, self.name, "Hours", "KW/KWh")
 
-    def get_regular_polygon_points(self,vertex_count, radius, position):
-        n, r = vertex_count, radius
-        x, y = position
-        return [(x + r * math.cos(2 * math.pi * i / n), y + r * math.sin(2 * math.pi * i / n)) for i in range(n)]

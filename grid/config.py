@@ -23,14 +23,22 @@ def tick_to_hour(time):
 
 theme = {
     'background':DARKGRAY,
-    'house':BLUE,
+    'house':LIGHTBLUE,
     'powerplant':RED,
     'powerline':WHITE,
-    'substation':BLACK
+    'substation':YELLOW,
+    'text':WHITE
 }
 
 layout = {
     'time':[(30,30),(400,200)],
     'worldgraph':[(30,250),(400,800)],
-    'legend':[(1120,750),(250,300)],
-    'gridgraph':[(1400,30),(500,1020)]}
+    'legend':[(1120,800),(250,250)],
+    'gridgraph':[(1400,30),(500,1020)],
+    'simover':[(1,1),(400,100)]}
+
+
+def get_regular_polygon_points(vertex_count, radius, position):
+    n, r = vertex_count, radius
+    x, y = position
+    return [(x + r * math.cos(2 * math.pi * i / n+math.pi/2), y + r * math.sin(2 * math.pi * i / n+math.pi/2)) for i in range(n)]

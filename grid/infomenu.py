@@ -8,6 +8,8 @@ matplotlib.use("Agg")
 import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import matplotlib.lines as lines
+from matplotlib.figure import Figure
+
 import pylab
 import colors
 import pygame
@@ -21,28 +23,6 @@ class InfoMenu:
         self.count=10
         
 
-    def drawSunGraph(self,env,screen):
-        surf = self.getGraph([5,2.5],"Sun Power", env["time"][-ticks_per_day:], env["sun"][-ticks_per_day:], "Time", "Sun Power")
-        screen.blit(surf, self.location + (500, 0))
-
-
-    def draw_world_graphs(self,grid,time,screen):
-        pass
-
-
-    def draw_grid_graphs(self, grid, time, screen):
-        if(self.count>=10):
-            self.grid_graphs = grid.get_grid_graphs()
-            self.count=0
-        self.count+=1
-        counter = 0
-        for graph in self.grid_graphs:
-            screen.blit(graph, (self.location[0] + 0, self.location[1] + counter))
-            counter += config.graph_spacing
-
-    def drawLegendBox(self,screen):
-        r = pygame.Rect(layout['legend'])
-        pygame.draw.rect(screen,GRAY,r)
 
     def drawTimeBox(self,screen,time):
         r = pygame.Rect(layout['time'])
@@ -58,31 +38,155 @@ class InfoMenu:
         img = font.render(s, True, colors.WHITE)
         screen.blit(img, (r.centerx-img.get_width()/2,r.centery-img.get_height()/2+30))
     
-    def drawWorldGraphBox(self,screen,time):
+    def drawWorldGraphBox(self,screen,grid,time):
         r = pygame.Rect(layout['worldgraph'])
         pygame.draw.rect(screen,GRAY,r)
+        graph = grid.getPriceGraph()
+
+        fig,ax = plt.subplots(3,1,figsize=(3.5,7), dpi=100,facecolor=graph_bg_color)   
+        
+        g = grid.price_graph_store
+        data_index = g.labels.index("price")
+        ax[0].plot(g.y[-g.max_steps:], list(map(lambda e: e[data_index], g.x))[-g.max_steps:], "b", label="Price($)")
+        ax[0].set_xlabel("Hours")
+        ax[0].set_ylabel("Dollars ($/kwH)")
+        ax[0].set_title("Energy Price")
+        ax[0].set_facecolor(graph_face_color)
+
+        env=self.env
+
+        past = time-ticks_per_day
+        if(past<0):
+            past=0
+        ax[1].plot(env["time"][past:time],env["sun"][past:time])
+        ax[1].set_xlabel("Time")
+        ax[1].set_ylabel("Sun")
+        ax[1].set_title("Sun Strength")
+        ax[1].set_ylim(bottom=0)
+        ax[2].plot(env["time"][past:time],env["wind"][past:time])
+        ax[2].set_xlabel("Time")
+        ax[2].set_ylabel("Wind")
+        ax[2].set_title("Wind Strength")
+        ax[2].set_ylim(bottom=0)
+
+        fig.subplots_adjust(
+                    #left=0.1,
+                    #bottom=0.5,
+                    #right=0.9,
+                    #top=0.9,
+                    #wspace=0.4,
+                    hspace=0.8
+        )
+        
+        canvas = agg.FigureCanvasAgg(fig)
+        canvas.draw()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        size = canvas.get_width_height()
+        matplotlib.pyplot.close()
+        surf = pygame.image.fromstring(raw_data, size, "RGB")
+        screen.blit(surf, (r.centerx-surf.get_width()/2, r.top))
 
     def drawLegendBox(self,screen):
         r = pygame.Rect(layout['legend'])
         pygame.draw.rect(screen,GRAY,r)
+        bigfont = pygame.font.SysFont(None, 48)
+        s = "Legend"
+        img = bigfont.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2,r.top+10))
+
+        font = pygame.font.SysFont(None, 30)
+        houselocation = (r.centerx-img.get_width()/2-30,r.top+60)
+        pygame.draw.polygon(screen,config.theme['house'], get_regular_polygon_points(3,20,houselocation),0)
+        s = "Residential House"
+        img = font.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2+25,r.top+60))
+
+        subr = pygame.Rect(1,1,40,40)
+        subr.center = (r.centerx-img.get_width()/2,r.top+120)
+        pygame.draw.rect(screen,theme['substation'],subr)
+        s = "Power Station"
+        img = font.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2+15,r.top+110))
+
+        powerlocation = (r.centerx-img.get_width()/2-20,r.top+180)
+        pygame.draw.circle(screen, config.theme['powerplant'], powerlocation, 20, 0)
+        s = "Power Plant"
+        img = font.render(s, True, colors.WHITE)
+        screen.blit(img, (r.centerx-img.get_width()/2+10,r.top+170))
+
     
-    def drawGridGraphBox(self,screen,time):
+    def drawGridGraphBox(self,screen,grid,time):
         r = pygame.Rect(layout['gridgraph'])
         pygame.draw.rect(screen,GRAY,r)
 
+        #fig = Figure(figsize=(5,10), dpi=100,facecolor=graph_bg_color)
+        #axs = fig.add_subplot(3,1)
+        fig,axs = plt.subplots(3,1,figsize=(5,10), dpi=100,facecolor=graph_bg_color)
+
+        labels_to_show = ["consumption", "battery charge", "generation", "net grid flow"]
+        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']   
+       
+        xlabel = "Hours"
+        ylabel = "KW/KWh"
+
+        #for house in grid.houses:
+        for i in range(len(axs)):
+            ax = axs[i]
+            house = grid.houses[i]
+            title = house.name + " stats"
+            #ax = fig.add_subplot(i+1,1,i+1)
+            g = house.graph_store
+            for i in range(len(labels_to_show)):
+                data_index = g.labels.index(labels_to_show[i])
+                ax.plot(g.y[-g.max_steps:], list(map(lambda e: e[data_index], g.x))[-g.max_steps:], colors[i], label=labels_to_show[i])
+                ax.set_xlabel(xlabel)
+                ax.set_ylabel(ylabel)
+                ax.set_title(title)
+                ax.set_facecolor(graph_face_color)
+                handles, labels = ax.get_legend_handles_labels()
+
+
+
+
+        
+        fig.subplots_adjust(
+                    #left=0.1,
+                    #bottom=0.1,
+                    #right=0.9,
+                    #top=0.9,
+                    #wspace=0.4,
+                    hspace=0.8
+        )
+        fig.legend(handles,labels,loc='lower center',borderaxespad=0,bbox_transform=fig.transFigure)
+        canvas = agg.FigureCanvasAgg(fig)
+
+        canvas.draw()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        size = canvas.get_width_height()
+        matplotlib.pyplot.close()
+        surf = pygame.image.fromstring(raw_data, size, "RGB")
+        screen.blit(surf, (r.centerx-surf.get_width()/2, r.top-50))
+        # if(self.count>=10):
+        #     self.grid_graphs = grid.get_grid_graphs()
+        #     self.count=0
+        # self.count+=1
+        # counter = 0
+        # for graph in self.grid_graphs:
+        #     screen.blit(graph, (r.centerx-graph.get_width()/2, r.top+counter))
+        #     counter += config.graph_spacing
+
     def draw(self,screen,grid,time):
         self.drawTimeBox(screen,time)
-        self.drawWorldGraphBox(screen,time)
+        self.drawWorldGraphBox(screen,grid,time)
         self.drawLegendBox(screen)
-        self.drawGridGraphBox(screen,time)
-        #self.drawWorldInfo(self.env,screen)
-        #self.draw_world_graphs(grid,time,screen)
-        # self.drawSunGraph(self.env,screen)
-        self.draw_grid_graphs(grid, time,screen)
+        self.drawGridGraphBox(screen,grid,time)
+
 
     def getGraph(self,size,title,x,y,xlabel,ylabel):
-        fig = pylab.figure(figsize=size, dpi=100)
-        plt = fig.gca()
+        
+
         plt.plot(x, y)
         plt.set_xlabel(xlabel)
         plt.set_ylabel(ylabel)

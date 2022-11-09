@@ -34,9 +34,9 @@ class Grid:
         [house.update(self, time, self.env) for house in self.houses]
 
     def draw(self, screen):
+        [x.draw(screen) for x in self.power_lines.values()]
         [x.draw(screen) for x in self.houses]
         [x.draw(screen) for x in self.power_plants]
-        [x.draw(screen) for x in self.power_lines.values()]
         self.substation.draw(screen)
 
     def get_homes_power(self, time: int):
@@ -64,6 +64,9 @@ class Grid:
             self.power_lines[i + len(self.houses)].flow = min(power_requested/len(self.power_lines), 0)
 
     def get_grid_graphs(self):
-        return [house.get_graph() for house in self.houses] \
-               + [self.price_graph_store.generate_graph(["price"], config.graph_size, "Energy Price", "Hours", "Dollars")]  
+        fig = pylab.figure(figsize=size,facecolor=bgcolor,dpi=100)
+        
+        return [house.get_graph() for house in self.houses]
 
+    def getPriceGraph(self):
+        return self.price_graph_store.generate_graph(["price"], config.graph_size, "Energy Price", "Hours", "Dollars ($/kwH)")

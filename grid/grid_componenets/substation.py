@@ -11,5 +11,7 @@ class Substation:
     #     self.houseImg= pygame.image.load('resources/house.png')
 
     def draw(self, screen):
-        pygame.draw.circle(screen, theme['substation'],self.location, 20, 0)
-        
+        r = pygame.Rect(1,1,60,60)
+        r.center = self.location
+        #pygame.draw.circle(screen, theme['substation'],self.location, 20, 0)
+        pygame.draw.rect(screen,theme['substation'],r)

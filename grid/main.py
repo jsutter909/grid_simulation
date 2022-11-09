@@ -30,6 +30,16 @@ time = 0
 RUNNING, PAUSE = 0, 1
 state = RUNNING
 
+def drawSimOver(screen):
+        r = pygame.Rect(layout['simover'])
+        rect = screen.get_rect()
+        r.center = rect.center
+        pygame.draw.rect(screen,BLACK,r)
+        font = pygame.font.SysFont(None, 48)
+        s = "Simulation Complete"
+        img = font.render(s, True, RED)
+        screen.blit(img, (r.centerx-img.get_width()/2,r.centery-img.get_height()/2))
+
 while not done:
     for event in pygame.event.get():  
         if event.type == pygame.QUIT:
@@ -40,6 +50,8 @@ while not done:
     
     if time>=timesteps:
         state=PAUSE
+        drawSimOver(screen)
+        pygame.display.flip()
     if state==RUNNING:
         
 
@@ -54,3 +66,4 @@ while not done:
     clock.tick(33)  # Each tick represents 5 minutes
 
 pygame.quit()
+
