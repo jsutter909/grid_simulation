@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ChartistGraph from "react-chartist";
 // react-bootstrap components
 import {
@@ -15,8 +15,69 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
+import TextField from "@mui/material/TextField";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import FilledInput from "@mui/material/FilledInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function Preferences() {
+  //consts for the AI preferences
+  const [alignment, setAlignment] = useState("android");
+  const [alignment1, setAlignment1] = useState("solar");
+  const [alignment2, setAlignment2] = useState("enabled");
+  const [alignment3, setAlignment3] = useState("enable");
+
+  const handleChange = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
+  const handleChange1 = (event, newAlignment1) => {
+    setAlignment1(newAlignment1);
+  };
+  const handleChange2 = (event, newAlignment2) => {
+    setAlignment2(newAlignment2);
+  };
+  const handleChange3 = (event, newAlignment3) => {
+    setAlignment3(newAlignment3);
+  };
+
+  //consts for the user set preferences
+  const [valueTime, setValueTime] = useState(dayjs("2014-08-18T21:11:54"));
+  const [valueTime1, setValueTime1] = useState(dayjs("2014-08-18T21:11:54"));
+  const handleChangeTime = (newValue) => {
+    setValueTime(newValue);
+  };
+  const handleChangeTime1 = (newValue) => {
+    setValueTime1(newValue);
+  };
+
+  const [values, setValues] = useState({
+    amount: "",
+    password: "",
+    weight: "",
+    weightRange: "",
+    showPassword: false,
+  });
+  const [values1, setValues1] = useState({
+    amount: "",
+    password: "",
+    weight: "",
+    weightRange: "",
+    showPassword: false,
+  });
+  const handleChangeAmount = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+  const handleChangeAmount1 = (prop) => (event) => {
+    setValues1({ ...values1, [prop]: event.target.value });
+  };
+
   return (
     <>
       <Container fluid>
@@ -32,18 +93,15 @@ function Preferences() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Number</p>
-                      <Card.Title as="h4">150GB</Card.Title>
+                      <p className="card-category">Energy Produced</p>
+                      <Card.Title as="h4">100W</Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
               <Card.Footer>
                 <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-redo mr-1"></i>
-                  Update Now
-                </div>
+                <div className="stats">In the last week</div>
               </Card.Footer>
             </Card>
           </Col>
@@ -58,18 +116,15 @@ function Preferences() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Revenue</p>
-                      <Card.Title as="h4">$ 1,345</Card.Title>
+                      <p className="card-category">Energy Used</p>
+                      <Card.Title as="h4">200W</Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
               <Card.Footer>
                 <hr></hr>
-                <div className="stats">
-                  <i className="far fa-calendar-alt mr-1"></i>
-                  Last day
-                </div>
+                <div className="stats">In the last week</div>
               </Card.Footer>
             </Card>
           </Col>
@@ -84,18 +139,15 @@ function Preferences() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Errors</p>
-                      <Card.Title as="h4">23</Card.Title>
+                      <p className="card-category">Main Energy Source</p>
+                      <Card.Title as="h4">Solar</Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
               <Card.Footer>
                 <hr></hr>
-                <div className="stats">
-                  <i className="far fa-clock-o mr-1"></i>
-                  In the last hour
-                </div>
+                <div className="stats">In the last week</div>
               </Card.Footer>
             </Card>
           </Col>
@@ -110,130 +162,163 @@ function Preferences() {
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Followers</p>
-                      <Card.Title as="h4">+45K</Card.Title>
+                      <p className="card-category">Money Saved</p>
+                      <Card.Title as="h4">$238.97</Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
               <Card.Footer>
                 <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-redo mr-1"></i>
-                  Update now
-                </div>
+                <div className="stats">In the last month</div>
               </Card.Footer>
             </Card>
           </Col>
         </Row>
+
         <Row>
-          <Col md="8">
+          <Col md="6">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Users Behavior</Card.Title>
-                <p className="card-category">24 Hours performance</p>
+                <Card.Title as="h4">User Set Preferences</Card.Title>
+                <p className="card-category">Toggle to change</p>
               </Card.Header>
               <Card.Body>
-                <div className="ct-chart" id="chartHours">
-                  <ChartistGraph
-                    data={{
-                      labels: [
-                        "9:00AM",
-                        "12:00AM",
-                        "3:00PM",
-                        "6:00PM",
-                        "9:00PM",
-                        "12:00PM",
-                        "3:00AM",
-                        "6:00AM",
-                      ],
-                      series: [
-                        [287, 385, 490, 492, 554, 586, 698, 695],
-                        [67, 152, 143, 240, 287, 335, 435, 437],
-                        [23, 113, 67, 108, 190, 239, 307, 308],
-                      ],
-                    }}
-                    type="Line"
-                    options={{
-                      low: 0,
-                      high: 800,
-                      showArea: false,
-                      height: "245px",
-                      axisX: {
-                        showGrid: false,
-                      },
-                      lineSmooth: true,
-                      showLine: true,
-                      showPoint: true,
-                      fullWidth: true,
-                      chartPadding: {
-                        right: 50,
-                      },
-                    }}
-                    responsiveOptions={[
-                      [
-                        "screen and (max-width: 640px)",
-                        {
-                          axisX: {
-                            labelInterpolationFnc: function (value) {
-                              return value[0];
-                            },
-                          },
-                        },
-                      ],
-                    ]}
-                  />
+                <div>
+                  <h6>set auto-buy</h6>
+                  <FormControl sx={{ m: 1 }} variant="filled">
+                    <InputLabel htmlFor="filled-adornment-amount">
+                      Amount
+                    </InputLabel>
+                    <FilledInput
+                      id="filled-adornment-amount"
+                      value={values.amount}
+                      onChange={handleChangeAmount("amount")}
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <h6>set auto-sell</h6>
+                  <FormControl sx={{ m: 1 }} variant="filled">
+                    <InputLabel htmlFor="filled-adornment-amount">
+                      Amount
+                    </InputLabel>
+                    <FilledInput
+                      id="filled-adornment-amount"
+                      value={values1.amount}
+                      onChange={handleChangeAmount1("amount")}
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <h6>time for battery top off</h6>
+                    <TimePicker
+                      value={valueTime}
+                      onChange={handleChangeTime}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <h6>time for car charging</h6>
+                    <TimePicker
+                      value={valueTime1}
+                      onChange={handleChangeTime1}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
                 </div>
               </Card.Body>
               <Card.Footer>
-                <div className="legend">
-                  <i className="fas fa-circle text-info"></i>
-                  Open <i className="fas fa-circle text-danger"></i>
-                  Click <i className="fas fa-circle text-warning"></i>
-                  Click Second Time
-                </div>
                 <hr></hr>
                 <div className="stats">
-                  <i className="fas fa-history"></i>
+                  <i className="fas fa-history mr-1"></i>
                   Updated 3 minutes ago
                 </div>
               </Card.Footer>
             </Card>
           </Col>
-          <Col md="4">
+          <Col md="6">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Email Statistics</Card.Title>
-                <p className="card-category">Last Campaign Performance</p>
+                <Card.Title as="h4">AI Preferences</Card.Title>
+                <p className="card-category">Toggle to change</p>
               </Card.Header>
               <Card.Body>
-                <div
-                  className="ct-chart ct-perfect-fourth"
-                  id="chartPreferences"
-                >
-                  <ChartistGraph
-                    data={{
-                      labels: ["40%", "20%", "40%"],
-                      series: [40, 20, 40],
-                    }}
-                    type="Pie"
-                  />
+                <div>
+                  <h6>Predict cloudiness and Extreme Weather</h6>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={alignment2}
+                    exclusive
+                    onChange={handleChange2}
+                    aria-label="Platform"
+                  >
+                    <ToggleButton value="enabled">Enabled</ToggleButton>
+                    <ToggleButton value="disabled">Disabled</ToggleButton>
+                  </ToggleButtonGroup>
                 </div>
-                <div className="legend">
-                  <i className="fas fa-circle text-info"></i>
-                  Open <i className="fas fa-circle text-danger"></i>
-                  Bounce <i className="fas fa-circle text-warning"></i>
-                  Unsubscribe
+                <div>
+                  <h6 style={{ marginTop: "10px" }}>predict car charging</h6>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={alignment3}
+                    exclusive
+                    onChange={handleChange3}
+                    aria-label="Platform"
+                  >
+                    <ToggleButton value="enable">Enabled</ToggleButton>
+                    <ToggleButton value="disable">disabled</ToggleButton>
+                  </ToggleButtonGroup>
                 </div>
-                <hr></hr>
-                <div className="stats">
-                  <i className="far fa-clock"></i>
-                  Campaign sent 2 days ago
+                <div>
+                  <h6 style={{ marginTop: "10px" }}>Battery Refill Strategy</h6>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={alignment}
+                    exclusive
+                    onChange={handleChange}
+                    aria-label="Platform"
+                  >
+                    <ToggleButton value="web">Conservative</ToggleButton>
+                    <ToggleButton value="android">Balanced</ToggleButton>
+                    <ToggleButton value="ios">Aggressive</ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <h6>Energy Preference</h6>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={alignment1}
+                    exclusive
+                    onChange={handleChange1}
+                    aria-label="Platform"
+                  >
+                    <ToggleButton value="wind">Wind</ToggleButton>
+                    <ToggleButton value="solar">Solar</ToggleButton>
+                    <ToggleButton value="gas">Natural gas</ToggleButton>
+                  </ToggleButtonGroup>
                 </div>
               </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="fas fa-history mr-1"></i>
+                  Updated 3 minutes ago
+                </div>
+              </Card.Footer>
             </Card>
           </Col>
         </Row>
+
         <Row>
           <Col md="6">
             <Card>
@@ -261,31 +346,11 @@ function Preferences() {
                       ],
                       series: [
                         [
-                          542,
-                          443,
-                          320,
-                          780,
-                          553,
-                          453,
-                          326,
-                          434,
-                          568,
-                          610,
-                          756,
+                          542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756,
                           895,
                         ],
                         [
-                          412,
-                          243,
-                          280,
-                          580,
-                          453,
-                          353,
-                          300,
-                          364,
-                          368,
-                          410,
-                          636,
+                          412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636,
                           695,
                         ],
                       ],
@@ -329,306 +394,36 @@ function Preferences() {
             </Card>
           </Col>
           <Col md="6">
-            <Card className="card-tasks">
+            <Card>
               <Card.Header>
-                <Card.Title as="h4">Tasks</Card.Title>
-                <p className="card-category">Backend development</p>
+                <Card.Title as="h4">Energy Consumption</Card.Title>
+                <p className="card-category">Energy Source Breakdown</p>
               </Card.Header>
               <Card.Body>
-                <div className="table-full-width">
-                  <Table>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultValue=""
-                                type="checkbox"
-                              ></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>
-                          Sign contract for "What are conference organizers
-                          afraid of?"
-                        </td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-488980961">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="info"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-506045838">Remove..</Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="danger"
-                            >
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultChecked
-                                defaultValue=""
-                                type="checkbox"
-                              ></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>
-                          Lines From Great Russian Literature? Or E-mails From
-                          My Boss?
-                        </td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-537440761">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="info"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-21130535">Remove..</Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="danger"
-                            >
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultChecked
-                                defaultValue=""
-                                type="checkbox"
-                              ></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>
-                          Flooded: One year later, assessing what was lost and
-                          what was found when a ravaging rain swept through
-                          metro Detroit
-                        </td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-577232198">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="info"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-773861645">Remove..</Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="danger"
-                            >
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultChecked
-                                type="checkbox"
-                              ></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>
-                          Create 4 Invisible User Experiences you Never Knew
-                          About
-                        </td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-422471719">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="info"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-829164576">Remove..</Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="danger"
-                            >
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultValue=""
-                                type="checkbox"
-                              ></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>Read "Following makes Medium better"</td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-160575228">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="info"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-922981635">Remove..</Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="danger"
-                            >
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultValue=""
-                                disabled
-                                type="checkbox"
-                              ></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>Unfollow 5 enemies from twitter</td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-938342127">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="info"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-119603706">Remove..</Tooltip>
-                            }
-                          >
-                            <Button
-                              className="btn-simple btn-link p-1"
-                              type="button"
-                              variant="danger"
-                            >
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
+                <div
+                  className="ct-chart ct-perfect-fourth"
+                  id="chartPreferences"
+                >
+                  <ChartistGraph
+                    data={{
+                      labels: ["40%", "20%", "40%"],
+                      series: [40, 20, 40],
+                    }}
+                    type="Pie"
+                  />
                 </div>
-              </Card.Body>
-              <Card.Footer>
+                <div className="legend">
+                  <i className="fas fa-circle text-info"></i>
+                  Solar <i className="fas fa-circle text-danger"></i>
+                  Natural Gas <i className="fas fa-circle text-warning"></i>
+                  Wind
+                </div>
                 <hr></hr>
                 <div className="stats">
-                  <i className="now-ui-icons loader_refresh spin"></i>
-                  Updated 3 minutes ago
+                  <i className="far fa-clock mr-1"></i>
+                  Last updated 7 days ago
                 </div>
-              </Card.Footer>
+              </Card.Body>
             </Card>
           </Col>
         </Row>
