@@ -35,7 +35,7 @@ const dashboardRoutes = [
   // },
   {
     path: "/preferences",
-    name: "Preferences",
+    name: "Home",
     icon: "nc-icon nc-preferences-circle-rotate",
     component: Preferences,
     layout: "/admin"
